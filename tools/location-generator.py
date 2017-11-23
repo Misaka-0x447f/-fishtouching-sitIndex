@@ -2,6 +2,7 @@ import hashlib
 import time
 import os
 import json
+import platform
 
 
 class Console:
@@ -9,6 +10,7 @@ class Console:
     def log(arg1):
         runtime = time.time() - script_start
         print("[" + "{:12.6f}".format(runtime) + "]" + arg1)
+
 
 class term:
     color_set = {
@@ -21,17 +23,22 @@ class term:
         "bold": "\033[1m",
         "underline": "\033[4m"
     }
+    win_color_set = {
+        ""
+    }
     @staticmethod
     def set_color(color):
-        if color in term.color_set:
-            print(term.color_set[color])
-        else:
-            print(term.color_set["warning"])
-            Console.log("Warning: unexcepted color received")
-            term.reset_color()
+        if platform.system() is "Linux":
+            if color in term.color_set:
+                print(term.color_set[color])
+            else:
+                print(term.color_set["warning"])
+                Console.log("Warning: unexcepted color received")
+                term.reset_color()
     @staticmethod
     def reset_color():
-        print(term.color_set["endc"])
+        if platform.system() is "Linux":
+            print(term.color_set["endc"])
 
 script_start = time.time()
 
