@@ -73,7 +73,8 @@ while True:
         term.set_color("okblue")
         name = input("name=")
         location = input("location=")
-        comment = input("(press enter to skip)comment=")
+        # comment = input("(press enter to skip)comment=")
+        comment = ""
         term.reset_color()
         if comment is "":
             push_contents = {
