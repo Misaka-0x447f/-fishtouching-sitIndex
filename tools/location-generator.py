@@ -49,7 +49,7 @@ file_name = "storage.json"
 Console.log("file name specified: " + file_name)
 if os.path.isfile(file_name):
     Console.log("file found: " + file_name)
-    file = open(file_name, "r")
+    file = open(file_name, "br")
     Console.log("existed content: ")
     file_content = file.read()
     file.close()
@@ -57,9 +57,9 @@ if os.path.isfile(file_name):
     print(file_content)
 else:
     Console.log("file not found, initializing file \"" + file_name + "\" with empty dict...")
-    file = open(file_name, "w")
+    file = open(file_name, "bw")
     file_content = {}
-    file.write("{\n}")
+    file.write("{\n}".encode())
     file.close()
 
 
@@ -113,11 +113,13 @@ while True:
             hashd_title: push_contents
         }
         file_content.update(file_write_counter)
-        file_write_counter = json.dumps(file_write_counter, sort_keys=True, indent=4)
+        file_write_counter = json.dumps(file_write_counter, sort_keys=True, indent=4, ensure_ascii=False)
 
         Console.log("saving files...")
-        file = open(file_name, "w")
-        string_total_written_value_receiver = file.write(json.dumps(file_content, sort_keys=True, indent=4))
+        file = open(file_name, "bw")
+        string_total_written_value_receiver = file.write(
+            json.dumps(file_content, sort_keys=True, indent=4, ensure_ascii=False).encode()
+        )
         file.close()
         term.set_color("okgreen")
         Console.log("Operate complete. Strings added: " + str(len(file_write_counter))
