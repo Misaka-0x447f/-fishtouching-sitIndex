@@ -8,4 +8,4 @@
 require("../lib/fileOp.php");
 $file = new fileOp();
 $file->fileSelect("../database.json");
-echo $file->fileExist();
+json_encode($file->jsonFileRead());

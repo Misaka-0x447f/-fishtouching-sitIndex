@@ -1,6 +1,10 @@
 <?php
 function echo_list()
 {
+    require("lib/fileOp.php");
+    $file = new fileOp();
+    $file->fileSelect("database.json");
+    $database = json_encode($file->jsonFileRead());
     echo '
         <div id="nanoAddressBookContainer">
             <div id="search-box">
@@ -12,6 +16,23 @@ function echo_list()
                 </svg>
                 <input id="search-box-int" type="search">
             </div>
+            <div id="result-box">
+                <div class="results">
+                    <div class="results-name results-child">
+                        黑暗剑21
+                    </div>
+                    <div class="results-location results-child">
+                        梦里
+                    </div>
+                </div>                <div class="results">
+                    <div class="results-name results-child">
+                        黑暗剑21
+                    </div>
+                    <div class="results-location results-child">
+                        梦里
+                    </div>
+                </div>
+            </div>
         </div>
         <style>
             @font-face{
@@ -19,7 +40,7 @@ function echo_list()
                 unicode-range: U+0000-007F;
             }
             #nanoAddressBookContainer, input{
-                font-family: "Source Code Pro", "Consolas", "Microsoft JhengHei UI", sans-serif;
+                font-family: "Source Code Pro", "Consolas", "Microsoft JhengHei UI", "SimHei", "STHeiti", sans-serif;
             }
             #nanoAddressBookContainer{
                 font-size: 36px;
@@ -28,6 +49,7 @@ function echo_list()
                 color: #888;
                 background: #f1f1f1;
                 border: 0;
+                overflow: hidden;
             }
             #search-box{
                 padding: 0 0.8em 0 2em;
@@ -35,7 +57,7 @@ function echo_list()
                 color: inherit;
             }
             #search-icon-svg path{
-                fill: #fff
+                fill: #ddd;
             }
             #search-icon-svg{
                 width: 1.4em;
@@ -49,16 +71,77 @@ function echo_list()
                 font-size: 1em;
                 width: 100%;
                 outline: none;
-                color: #fff;
+                color: #ddd;
                 background: inherit;
                 border: 0;
             }
+            .results{
+                font-size: 1em;
+                height: 1.9em;
+                background: #ddd;
+                padding: 0.3em 0.3em;
+                margin-top: 0.1em;
+            }
+            .results-name{
+                font-size: 0.8em;            
+            }
+            .results-location{
+                font-size: 0.6em;
+            }
         </style>
         <script>
+            let database = undefined;
             window.onload = function(){
-                var fontSize = (window.innerHeight/743 * 36).toString() + "px";
-                console.log(fontSize);
+                database = ' . $database . ';
+                console.log(database);
+                adjust_once();
+                update();
+                setInterval(update, 50);
+            };
+            function adjust_once(){
+                let fontSize = window.innerHeight/743 * 36;
+                
+                fontSize = fontSize.toString() + "px";
+
                 document.getElementById("nanoAddressBookContainer").style.fontSize = fontSize;
+            }
+            function update(){
+                document.getElementById("search-box-int").focus();
+                
+                /* promise: the height of every single result is 2.6em. */
+                let fontSize = window.innerHeight/743 * 36;
+
+                let search_count_max = Math.floor((window.innerHeight - (fontSize * 2)) / (fontSize * 2.6));
+
+                search_content = document.getElementById("search-box-int").value;
+                
+                search_storage = [];
+
+                let search_count = 0;
+                
+                for(let key in database["database"]){
+                    if(database["database"][key]["name"].search(search_content) >= 0 || database["database"][key]["location"].search(search_content) >= 0){
+                        search_storage.push(database["database"][key]);
+                        search_count++;
+                        if(search_count > search_count_max){
+                            break;
+                        }
+                    }
+                }
+                
+                document.getElementById("result-box").innerHTML = "";
+                
+                function create_search_result(name, location){
+                    document.getElementById("result-box").innerHTML += 
+                    "<div class=\\"results\\">" + 
+                    "<div class=\\"results-name results-child\\">" + name + "</div>" +
+                    "<div class=\\"results-location results-child\\">" + location + "</div>" + 
+                    "</div>";
+                }
+                
+                search_storage.forEach(function(val){
+                    create_search_result(val["name"], val["location"]);
+                })                
             }
         </script>
     ';
