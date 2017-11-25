@@ -17,21 +17,11 @@ function echo_list()
                 <input id="search-box-int" type="search">
             </div>
             <div id="result-box">
-                <div class="results">
-                    <div class="results-name results-child">
-                        黑暗剑21
-                    </div>
-                    <div class="results-location results-child">
-                        梦里
-                    </div>
-                </div>                <div class="results">
-                    <div class="results-name results-child">
-                        黑暗剑21
-                    </div>
-                    <div class="results-location results-child">
-                        梦里
-                    </div>
-                </div>
+
+            </div>
+            <div id="result-not-found">
+                找不到这样的地点。<br/>
+                换个搜索词试试，吧                    
             </div>
         </div>
         <style>
@@ -88,6 +78,9 @@ function echo_list()
             .results-location{
                 font-size: 0.6em;
             }
+            #result-not-found{
+                position: absolute; left: 50%; top: 50%; height: 2em; margin-top: -1em; margin-left: -4.5em;
+            }
         </style>
         <script>
             let database = undefined;
@@ -95,7 +88,6 @@ function echo_list()
                 database = ' . $database . ';
                 console.log(database);
                 adjust_once();
-                update();
                 setInterval(update, 50);
             };
             function adjust_once(){
@@ -139,9 +131,14 @@ function echo_list()
                     "</div>";
                 }
                 
-                search_storage.forEach(function(val){
-                    create_search_result(val["name"], val["location"]);
-                })                
+                if(search_storage.length === 0){
+                    document.getElementById("result-not-found").style.opacity = 1;
+                }else{
+                    document.getElementById("result-not-found").style.opacity = 0;
+                    search_storage.forEach(function(val){
+                        create_search_result(val["name"], val["location"]);
+                    })                
+                }
             }
         </script>
     ';
