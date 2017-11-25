@@ -4,7 +4,6 @@ function echo_list()
     echo '
         <div id="nanoAddressBookContainer">
             <div id="search-box">
-                <canvas id="search-box-int-icon"></canvas>
                 <input id="search-box-int" type="search">
             </div>
         </div>
@@ -27,13 +26,6 @@ function echo_list()
                 background: #ddd;
                 border: 0;
             }
-            #search-box-int-icon{
-                width: 1.6em;
-                height: 1.6em;
-                margin: 0.2em;
-                position: absolute;
-            }
         </style>
-
     ';
 }
